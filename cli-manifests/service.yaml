@@ -1,0 +1,34 @@
+service:
+  name: votingappservice
+  identifier: votingappservice
+  orgIdentifier: sandbox
+  projectIdentifier: Femi_Sandbox
+  serviceDefinition:
+    spec:
+      manifests:
+        - manifest:
+            identifier: configjson
+            type: ReleaseRepo
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: githubconnector
+                  gitFetchType: Branch
+                  paths:
+                    - k8s-specifications/cluster-config/<+env.name>/config.json
+                  branch: main
+        - manifest:
+            identifier: votingappdeployment
+            type: DeploymentRepo
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: githubconnector
+                  gitFetchType: Branch
+                  paths:
+                    - k8s-specifications/git-generator-files.yaml
+                  branch: main
+    type: Kubernetes
+  gitOpsEnabled: true
