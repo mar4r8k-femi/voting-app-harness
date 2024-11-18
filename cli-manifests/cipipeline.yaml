@@ -8,6 +8,7 @@ pipeline:
     ci:
       codebase:
         connectorRef: femigithub
+        repoName: voting-app-harness
         build: <+input>
   stages:
     - stage:
