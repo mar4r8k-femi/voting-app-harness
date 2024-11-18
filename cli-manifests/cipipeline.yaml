@@ -1,0 +1,93 @@
+pipeline:
+  name: voting-app-harness
+  identifier: voting_app_harness
+  projectIdentifier: Femi_Sandbox
+  orgIdentifier: sandbox
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: femigithub
+        build: <+input>
+  stages:
+    - stage:
+        name: ci-stage
+        identifier: cistage
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - parallel:
+                - step:
+                    type: Owasp
+                    name: Run OWASP Scan
+                    identifier: Run_OWASP_Scan
+                    spec:
+                      mode: orchestration
+                      config: default
+                      target:
+                        type: repository
+                      advanced:
+                        log:
+                          level: info
+                - step:
+                    type: OsvScanner
+                    name: Run Osv Scanner
+                    identifier: Run_Osv_Scanner
+                    spec:
+                      mode: orchestration
+                      config: default
+                      target:
+                        type: repository
+                        detection: auto
+                      advanced:
+                        log:
+                          level: info
+              - parallel:
+                - step:
+                    type: BuildAndPushDockerRegistry
+                    name: Build And Push Worker
+                    identifier: Build_And_Push_Docker_Registry_Worker
+                    spec:
+                      connectorRef: femidockerhub
+                      repo: mar4r8kfemi/votingapp_worker
+                      tags:
+                        - <+pipeline.variables.imageTag>
+                      cachiing: true
+                      dockerfile: worker/Dockerfile
+                - step:
+                    type: BuildAndPushDockerRegistry
+                    name: Build And Push Vote
+                    identifier: Build_And_Push_Docker_Registry_Vote
+                    spec:
+                      connectorRef: femidockerhub
+                      repo: mar4r8kfemi/votingapp_vote
+                      tags:
+                        - <+pipeline.variables.imageTag>
+                      cachiing: true
+                      dockerfile: vote/Dockerfile
+                - step:
+                    type: BuildAndPushDockerRegistry
+                    name: Build And Push Result
+                    identifier: Build_And_Push_Docker_Registry_Result
+                    spec:
+                      connectorRef: femidockerhub
+                      repo: mar4r8kfemi/votingapp_result
+                      tags:
+                        - <+pipeline.variables.imageTag>
+                      cachiing: true
+                      dockerfile: result/Dockerfile
+  variables:
+    - name: imageTag
+      type: String
+      description: ""
+      required: false
+      value: latest
