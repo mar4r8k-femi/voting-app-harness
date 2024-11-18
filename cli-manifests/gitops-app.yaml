@@ -11,7 +11,7 @@ gitops:
         harness.io/envRef: ""
     spec:
       source:
-        repoURL: mar4r8k-femi/voting-app-harness
+        repoURL: https://github.com/mar4r8k-femi/voting-app-harness
         path: k8s-specifications/
         targetRevision: main
       destination:
