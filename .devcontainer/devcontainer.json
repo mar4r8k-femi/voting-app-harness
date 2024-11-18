@@ -1,0 +1,9 @@
+{
+	"name": "Voting App for Harness",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu", 
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
+	},
+	"postCreateCommand": "docker-compose build",
+	"postStartCommand": "docker-compose -f docker-compose.yml up"
+}
