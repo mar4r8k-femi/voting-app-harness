@@ -36,6 +36,7 @@ pipeline:
                       config: default
                       target:
                         type: repository
+                        detection: auto
                       advanced:
                         log:
                           level: info
