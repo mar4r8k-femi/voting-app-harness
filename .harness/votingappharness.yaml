@@ -1,0 +1,107 @@
+pipeline:
+  name: voting-app-harness
+  identifier: votingappharness
+  projectIdentifier: Femi_Sandbox
+  orgIdentifier: sandbox
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: femigithub
+        repoName: voting-app-harness
+        build: <+input>
+  stages:
+    - stage:
+        name: Build-Test-Push
+        identifier: BuildTestPush
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            paths: []
+          buildIntelligence:
+            enabled: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - stepGroup:
+                  name: SCA
+                  identifier: SCA
+                  steps:
+                    - parallel:
+                        - step:
+                            type: OsvScanner
+                            name: Osv Scanner
+                            identifier: Osv_Scanner
+                            spec:
+                              mode: orchestration
+                              config: default
+                              target:
+                                type: repository
+                                detection: auto
+                              advanced:
+                                log:
+                                  level: info
+                        - step:
+                            type: Owasp
+                            name: Owasp
+                            identifier: Owasp
+                            spec:
+                              mode: orchestration
+                              config: default
+                              target:
+                                type: repository
+                                detection: auto
+                              advanced:
+                                log:
+                                  level: info
+              - stepGroup:
+                  name: Build and Push Artifact
+                  identifier: Build_and_Push_Artifact
+                  steps:
+                    - parallel:
+                        - step:
+                            type: BuildAndPushDockerRegistry
+                            name: Build and Push Vote
+                            identifier: Build_and_Push_Vote
+                            spec:
+                              connectorRef: femidockerhub
+                              repo: mar4r8kfemi/votingapp_vote
+                              tags:
+                                - latest
+                              caching: true
+                              dockerfile: ./Dockerfile
+                              context: ./vote/
+                        - step:
+                            type: BuildAndPushDockerRegistry
+                            name: Build and Push Result
+                            identifier: Build_and_Push_Result
+                            spec:
+                              connectorRef: femidockerhub
+                              repo: mar4r8kfemi/votingapp_result
+                              tags:
+                                - latest
+                              caching: true
+                              dockerfile: ./Dockerfile
+                              context: ./result/
+                        - step:
+                            type: BuildAndPushDockerRegistry
+                            name: Build and Push Docker Worker
+                            identifier: Build_and_Push_Docker_Worker
+                            spec:
+                              connectorRef: femidockerhub
+                              repo: mar4r8kfemi/votingapp_worker
+                              tags:
+                                - latest
+                              caching: true
+                              dockerfile: ./Dockerfile
+                              context: ./worker/
+          slsa_provenance:
+            enabled: false
