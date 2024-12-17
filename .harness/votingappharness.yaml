@@ -78,7 +78,7 @@ pipeline:
                                 - latest
                               caching: true
                               dockerfile: ./Dockerfile
-                              context: /vote
+                              context: ./vote
                         - step:
                             type: BuildAndPushDockerRegistry
                             name: Build and Push Result
@@ -90,7 +90,7 @@ pipeline:
                                 - latest
                               caching: true
                               dockerfile: ./Dockerfile
-                              context: /result/
+                              context: ./result
                         - step:
                             type: BuildAndPushDockerRegistry
                             name: Build and Push Docker Worker
@@ -102,6 +102,6 @@ pipeline:
                                 - latest
                               caching: true
                               dockerfile: ./Dockerfile
-                              context: /worker/
+                              context: ./worker
           slsa_provenance:
             enabled: false
