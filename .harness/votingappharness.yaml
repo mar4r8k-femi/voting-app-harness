@@ -78,7 +78,7 @@ pipeline:
                                 - latest
                               caching: true
                               dockerfile: ./Dockerfile
-                              context: /vote/
+                              context: /vote
                         - step:
                             type: BuildAndPushDockerRegistry
                             name: Build and Push Result
