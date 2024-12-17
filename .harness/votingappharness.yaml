@@ -78,7 +78,7 @@ pipeline:
                                 - latest
                               caching: true
                               dockerfile: ./Dockerfile
-                              context: ./vote
+                              context: https://github.com/mar4r8k-femi/voting-app-harness/vote
                         - step:
                             type: BuildAndPushDockerRegistry
                             name: Build and Push Result
